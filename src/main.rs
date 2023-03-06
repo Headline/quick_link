@@ -16,7 +16,9 @@ async fn index(code : String, link_store : &State<LinkStore>) -> Redirect {
     let mut link_reader = link_store.store.lock().await;
     let maybe_url = link_reader.get_mut(&code);
     if let Some(url) = maybe_url {
-        let url = url.clone();
+        let mut trimmed = url.chars();
+        trimmed.next_back();
+        let url = trimmed.as_str().to_string();
         Redirect::to(url)
     }
     else {
@@ -35,7 +37,8 @@ async fn link(input: String, link_store : &State<LinkStore>) -> String {
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
-        .mount("/", routes![index, link]).manage(
+        .mount("/", routes![index, link])
+        .manage(
         LinkStore {
             store: Arc::new(Mutex::new(LruCache::new(10000)))
         }
