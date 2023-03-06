@@ -16,7 +16,7 @@ async fn index(code : String, link_store : &State<LinkStore>) -> Redirect {
     let mut link_reader = link_store.store.lock().await;
     let maybe_url = link_reader.get_mut(&code);
     if let Some(url) = maybe_url {
-        let mut trimmed = url.chars();
+        let mut trimmed = url.trim().chars();
         trimmed.next_back();
         let url = trimmed.as_str().to_string();
         println!("Redirecting to: '{}'", url);
