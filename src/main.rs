@@ -19,6 +19,7 @@ async fn index(code : String, link_store : &State<LinkStore>) -> Redirect {
         let mut trimmed = url.chars();
         trimmed.next_back();
         let url = trimmed.as_str().to_string();
+        println!("Redirecting to: '{}'", url);
         Redirect::to(url)
     }
     else {
