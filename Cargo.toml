@@ -7,6 +7,6 @@ license = "AGPL-3.0"
 
 
 [dependencies]
-rocket = "0.5.0-rc.2"
+rocket = "0.5"
 lru-cache = "0.1"
 rand = "0.8.5"

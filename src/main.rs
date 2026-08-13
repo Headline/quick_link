@@ -7,6 +7,8 @@ use rocket::State;
 use rand::distributions::{Alphanumeric, DistString};
 use rocket::tokio::sync::Mutex;
 
+const DEFAULT_CACHE_SIZE : usize = 10000;
+
 struct LinkStore {
     store : Arc<Mutex<LruCache<String, String>>>
 }
@@ -34,11 +36,19 @@ async fn link(input: String, link_store : &State<LinkStore>) -> String {
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
-    let _rocket = rocket::build()
+    let rocket = rocket::build();
+
+    // Comes from Rocket.toml or ROCKET_CACHE_SIZE, like the rest of the config.
+    let cache_size = rocket.figment()
+        .extract_inner("cache_size")
+        .unwrap_or(DEFAULT_CACHE_SIZE);
+    println!("Cache size: {}", cache_size);
+
+    let _rocket = rocket
         .mount("/", routes![index, link])
         .manage(
         LinkStore {
-            store: Arc::new(Mutex::new(LruCache::new(10000)))
+            store: Arc::new(Mutex::new(LruCache::new(cache_size)))
         }
     ).launch().await?;
 

@@ -1,0 +1,11 @@
+services:
+  quick_link:
+    build: .
+    image: quick_link
+    ports:
+      - "8000:8000"
+    environment:
+      ROCKET_ADDRESS: 0.0.0.0
+      ROCKET_PORT: 8000
+      ROCKET_CACHE_SIZE: 10000
+    restart: unless-stopped
